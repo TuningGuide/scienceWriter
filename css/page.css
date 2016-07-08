@@ -1,0 +1,23 @@
+@media print {
+
+	@page {
+		@bottom {
+			content: counter(page) " / " counter(pages);
+			line-height:3mm;
+			vertical-align:top;
+		}
+	}
+
+	@page blank {
+		@bottom {
+			content: "";
+			content: none;
+		}
+	}
+
+	@page toc {
+		@bottom {
+			content: counter(page, lower-roman);
+		}
+	}
+}

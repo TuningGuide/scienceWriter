@@ -1,0 +1,22 @@
+{
+  "name": "science_writer",
+  "version": "1.0.0",
+  "description": "This folder contains: * a node server (server.js) which observes changes in 'output' folder and keeps it in sync with git * a editor.html and index.html to serve",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Velten Heyn <veltenheyn@web.de> <vh@valoric.de>",
+  "license": "Closed",
+  "dependencies": {
+    "ftp": "^0.3.10",
+    "h5o": "^0.11.3",
+    "hypher": "^0.2.4",
+    "rsync": "^0.4.0",
+    "commander": "latest",
+    "simple-git": "latest",
+    "express": "latest",
+    "body-parser": "latest"
+  }
+}

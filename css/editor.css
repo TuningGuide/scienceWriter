@@ -1,0 +1,50 @@
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+#contentForm {
+  width: 98%;
+  height: 100% !important;
+}
+#contentForm > .mce-tinymce,
+#contentForm > .mce-tinymce > .mce-container-body {
+  min-height: 100% !important;
+}
+#contentForm > .mce-tinymce > .mce-container-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+#contentForm > .mce-tinymce > .mce-container-body .mce-toolbar-grp {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+#contentForm > .mce-tinymce > .mce-container-body .mce-edit-area {
+  position: absolute;
+  top: 36px;
+  bottom: 26px;
+  left: 0;
+  right: 0;
+}
+#contentForm > .mce-tinymce > .mce-container-body .mce-edit-area iframe {
+  min-height: 100% !important;
+}
+#contentForm > .mce-tinymce > .mce-container-body .mce-statusbar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+#contentForm > .mce-tinymce > .mce-container-body .mce-statusbar .mce-path {
+  padding: 2px !important;
+}
+#contentForm > .mce-tinymce > .mce-container-body .mce-statusbar .mce-wordcount {
+  padding: 2px 10px !important;
+}
+#content {
+  display: block;
+}

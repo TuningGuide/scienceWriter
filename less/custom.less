@@ -1,0 +1,486 @@
+@import "../css/main.css";
+@import "../css/page.css";
+/* ==========================================================================
+   Variables
+   ========================================================================== */
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+html {
+	background-color: #CCC;
+	padding: 10mm 0px;
+}
+body,
+th,
+td,
+pre {
+	font-size: 11pt;
+	color: #000;
+	font-family: Candara;
+	line-height: 1.6em;
+	border: 1px dotted #CCC;
+}
+body {
+	width: 168mm;
+	/* height: 297mm; */
+	margin: 0 auto;
+	background-color: #fff;
+	box-shadow: 0 0 20px #888;
+	border: 1mm solid #CCC;
+	word-wrap: break-word;
+}
+table {
+	width: 100%;
+}
+a {
+	color: #3076d3;
+}
+a:hover {
+	color: #063461;
+}
+img {
+	max-width: 100%;
+	height: auto;
+	max-height: 221.5mm;
+}
+
+@font-face {
+	font-family: 'Linux Libertine';
+	src: url('/fonts/LinLibertineWOFF_5.3.0_2012_07_02/LinLibertine_R.woff') format('woff');
+}
+
+h1 {
+	font-size: 1.75em;
+	font-family: "Linux Libertine",Georgia,Times,serif; /*font-family: "freight-sans-pro","Myriad Pro","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;*/
+}
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-weight: normal;
+	font-family: "Linux Libertine",Georgia,Times,serif; /*font-family: "Georgia","Times New Roman",serif;*/
+}
+h1 + p,
+h2 + p,
+h3 + p,
+h4 + p,
+h5 + p,
+h6 + p {
+	margin-top: 0.5em;
+}
+p {
+	color: #333333;
+	font-family: "Linux Libertine",Georgia,Times,serif; /*font-family: Helvetica,Times,serif;*/
+	font-size: 16px;
+	font-weight: 200;
+	line-height: 1.5;
+	padding-left: 5px;
+	padding-right: 5px;
+	text-align: justify;
+}
+table {
+	border-collapse: separate;
+	border-spacing: 2px;
+}
+article section h1 {
+	font-size: 1.5em;
+}
+article section {
+	counter-increment: numchapter;
+}
+article section section:first-of-type {
+	counter-reset: numchapter;
+}
+article section h1:before {
+	content: counters(numchapter, ".") " ";
+}
+article section h2 {
+	font-size: 1.25em;
+}
+article section h3 {
+	font-size: 1.125em;
+}
+article section section h1 {
+	font-size: 1.3em;
+}
+article section section h2 {
+	font-size: 1.15em;
+}
+article section section h3 {
+	font-size: 1em;
+}
+article {
+	margin: 14mm 20mm 13mm 20mm;
+}
+header {
+	text-align: center;
+}
+header figcaption,
+.preface figcaption {
+	display: none;
+}
+figcaption {
+	font-size: 0.9em;
+}
+header *:first-child {
+	margin-top: 0;
+}
+article > * {
+	margin-bottom: 10mm;
+}
+/*section section {
+	border-bottom: 1px dashed #CCC;
+}*/
+ul,
+ol {
+	margin: 0;
+	padding-left: 5mm;
+}
+ul ul,
+ol ol {
+	padding-left: 5mm;
+}
+#toc ol {
+	color: #3076d3;
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+#toc ol li a {
+	display: block;
+	font-weight: bold;
+	text-decoration: none;
+}
+#toc ol li a:before {
+	min-width: 1mm;
+}
+#toc ol ol {
+	counter-reset: numsection;
+}
+#toc ol ol li a {
+	margin-top: 2mm;
+	margin-left: 8mm;
+}
+#toc ol ol li a::before {
+	display: inline-block;
+	min-width: 6mm;
+	margin-left: -8mm;
+	counter-increment: numsection;
+	content: counters(numsection, ".") ". ";
+	margin-right: 2mm;
+}
+#toc ol ol ol li a {
+	font-weight: normal;
+	margin-top: 0;
+}
+#toc ol ol ol li a::before {
+	font-weight: normal;
+	content: counters(numsection, ".") " ";
+}
+#toc ol ol ol ol li a {
+	margin-top: -1mm;
+	font-size: 0.85em;
+}
+ul ul {
+	list-style-type: circle;
+}
+ul.arrow {
+	list-style: none;
+	margin-left: 0;
+	padding-left: 1em;
+}
+ul.arrow li:before {
+	display: inline-block;
+	content: "->";
+	width: 1em;
+	margin-left: -1em;
+}
+article > *:last-child,
+header > *:last-child,
+section > *:last-child {
+	padding-bottom: 0;
+	border-bottom: none;
+}
+table caption {
+	caption-side: top;
+	padding: 0 2px;
+	border: 1px dotted #ccc;
+}
+table th {
+	padding: 2px;
+	border: 1px dotted #ccc;
+}
+table td {
+	padding: 2px;
+	border: 1px dotted #ccc;
+}
+table td p:first-child {
+	margin-top: 0;
+}
+table td p:last-child {
+	margin-bottom: 0;
+}
+table.brace {
+	border-collapse: separate;
+}
+table.brace tr td:first-child + td {
+	border-left: 0;
+}
+table.brace tr td {
+	border-style: solid;
+	border-width: 0px 1px 1px 1px;
+	border-color: rgba(0, 0, 0, 0.05);
+}
+table.brace tr:first-child td {
+	border-top-width: 1px;
+}
+table.brace tr td:first-child {
+	border-style: solid;
+	border-width: 0px 3px 3px 3px;
+	border-image: url(../img/border.png) 3 3 3 3 repeat;
+	-webkit-border-image: url(../img/border.png) 3 3 3 3 repeat;
+	-moz-border-image: url(../img/border.png) 3 3 3 3 repeat;
+	-o-border-image: url(../img/border.png) 3 3 3 3 repeat;
+}
+table.brace tr:first-child td:first-child {
+	border-top-width: 3px;
+}
+caption {
+	text-align: left;
+	font-size: 0.8em;
+	font-style: italic;
+	caption-side: bottom;
+}
+
+.alert {
+	background-color: #F0AD4E;
+	border: medium #e89900;
+	border-radius: 5px;
+	color: #cccccc;
+	padding: 0.5em 1em;
+	padding-left: 50px;
+	position: relative;
+}
+
+.question:before {
+	content: "?";
+	position: absolute;
+	top: 50%;
+	margin-top: -15px;
+	left: 10px;
+	width: 30px;
+	height: 30px;
+	color: #FFFFFF;
+	text-align: center;
+	line-height: 36px;
+	padding-left: 2px;
+	font-family: "Linux Libertine",Georgia,Times,serif; /*font-family: "freight-sans-pro","Myriad Pro","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;*/
+	font-size: 20pt;
+	display: block;
+	background: #e89900;
+	border-radius: 15px;
+}
+
+.info {
+	position: relative;
+	background-color: #ddd;
+	border: 1px solid #bbb;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	padding: 0.5em;
+	padding-left: 50px;
+}
+.info:before {
+	color: #eee;
+	position: absolute;
+	margin-top: -15px;
+	top: 50%;
+	text-align: center;
+	line-height: 32px;
+	left: 10px;
+	content: "i";
+	width: 30px;
+	height: 30px;
+	font-family: Times, serif;
+	font-size: 20pt;
+	display: block;
+	background: #bbb;
+	-webkit-border-radius: 15px;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+}
+a[href="#thesis"],
+#toc-worktitle,
+a[href="#toc-worktitle"] {
+	display: none !important;
+}
+#toc-bibliography,
+#toc-references {
+	font-size: 0.8em;
+}
+#toc-bibliography td,
+#toc-references td {
+	vertical-align: top;
+	padding: 1mm;
+}
+#toc-bibliography tr td:first-child,
+#toc-references tr td:first-child {
+	border-right: 1px dashed #CCC;
+	min-width: 1.6cm;
+	text-align: left;
+	padding-left: 0;
+}
+#toc-bibliography .btb-header,
+#toc-references .btb-header {
+	margin-top: 0.5em;
+	font-weight: bold;
+}
+.pagebreak {
+	display: none;
+}
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+.clearfix {
+	display: inline-block;
+}
+html[xmlns] .clearfix {
+	display: block;
+}
+* html .clearfix {
+	height: 1%;
+}
+@media print {
+	html {
+		counter-reset: toc 1;
+	}
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+	}
+	@page {
+		size: 210mm 297mm;
+		margin: 20mm 20mm 5.5mm 20mm;
+		padding: 0;
+	}
+	body {
+		padding-bottom: 1mm;
+		border: 1mm solid #CCC;
+		width: 168mm;
+	}
+	article {
+		padding-bottom: 1mm;
+		margin: 14mm 20mm 13mm 20mm;
+	}
+	header,
+	article > div {
+		page: blank;
+		page-break-inside: auto;
+		page-break-after: always;
+	}
+	header {
+		counter-reset: page 0 pages 0;
+	}
+	.preface {
+		page: toc;
+		page-break-inside: avoid;
+		page-break-after: always;
+	}
+	.preface.first {
+		counter-reset: page 1 pages 1;
+	}
+	.printpagenumber a {
+		text-decoration: none;
+	}
+	#toc ol a::after {
+		content: " " leader(' . ') " " target-counter(attr(href), page, lower-roman);
+	}
+	.printpagenumber ol a::after,
+	#toc ol ol a::after {
+		content: " " leader(' . ') " " target-counter(attr(href), page);
+	}
+	article > * {
+		page-break-inside: avoid;
+	}
+	h1,
+	h2,
+	h3 {
+		page-break-after: avoid;
+	}
+	hr {
+		page-break-after: always;
+	}
+	article > section:first-of-type {
+		counter-reset: page 1 pages 1;
+	}
+	article > section + div {
+		counter-reset: page 1 pages 1;
+	}
+	.page-break {
+		visibility: hidden;
+		page-break-after: always;
+	}
+	article > section {
+		counter-reset: footnote;
+	}
+	a[href]:after {
+		display: block;
+		footnote-style-position: inside;
+		content: " " attr(href);
+		float: footnote;
+		counter-increment: footnote;
+	}
+	abbr[title]:after {
+		content: " (" attr(title) ")";
+	}
+	a[href^="#"]::after {
+		display: inline;
+		float: none;
+		content: " (Seite " target-counter(attr(href), page) ")";
+	}
+	a[href^="#glossar"]::after {
+		display: inline;
+		float: none;
+		content: "";
+	}
+	/*section a[href^="http://de.wikipedia.org/"]:after, section a[href^="http://en.wikipedia.org/"]:after {
+		  display:inline;
+		  content: "";
+	  }*/
+	a.cross-ref {
+		display: inline;
+		float: none;
+		content: "";
+	}
+	a.cross-ref::after {
+		display: inline;
+		float: none;
+		content: target-counters(attr(href), numchapter, ".");
+	}
+	a.bib-ref::after {
+		display: inline;
+		float: none;
+		content: "";
+	}
+	a.biburl,
+	a.biburl + a {
+		display: none;
+	}
+	/*@page :left {
+		  margin-left: 25mm;
+		  margin-right: 15mm;
+	  }
+
+	  @page :right {
+		  margin-left: 15mm;
+		  margin-right: 25mm;
+	  }*/
+}

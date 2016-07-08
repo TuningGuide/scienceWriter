@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Science Writer</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/editor.css">
+	<link rel="stylesheet" href="css/all.css">
+	<link rel="stylesheet" href="vendor/bib-publication-list/bib-publication-list.css" type="text/css" />
+</head>
+<body>
+
+<form id="contentForm" method="post" action="output/content.html">
+	<textarea id="content" lang="de" name="content" style="width:100%"></textarea>
+</form>
+
+<div id="bibliography">
+</div>
+
+<div id="references">
+</div>
+
+<!-- TODO use fallback.io for cdn fallback management -->
+<script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+<script>window.jQuery || document.write('<script src="vendor/jquery-2.2.1.min.js"><\/script>')</script>
+<!--<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>-->
+<script>window.tinymce || document.write('<script src="vendor/tinymce/js/tinymce/tinymce.dev.js"><\/script>')</script>
+<script src="vendor/bib-publication-list/build/bib-list.js"></script>
+<script src="node_modules/h5o/dist/outliner.min.js"></script>
+<script src="js/toccreator.js"></script>
+<script src="js/editor.js"></script>
+<script>
+	var outputPath = 'http://localhost:8888/output';
+	var activeSaving = null;
+	var lang = 'de';
+
+	function checkForAutosave() {
+		var editor = tinymce.get('content'); // also possible tinyMCE.activeEditor
+		if(editor.isDirty()) {
+			ajaxSave(editor);
+		}
+	}
+
+	function ajaxSave(editor, showProgress) {
+		var content = editor.getContent();
+		// replace soft hyphens with nothing:
+		content = content.replace(/[\u00AD\u2010\u2011]+/g,'');
+		// replace editor html
+		content = content.replace('<br data-mce-bogus="1">', '');
+		console.log("saving content");
+
+		if(showProgress) editor.setProgressState(1); // Show progress symbol
+
+		$.post({
+			url: outputPath+"/content.html",
+			data: {content: content},
+			async: false,
+			success: function success() {
+				editor.isNotDirty = true;
+				updateInfo(editor);
+			}
+		})
+			.error(function(error) {
+				console.log(error);
+				alert("Saving did not work: " +error);
+			})
+			.always(function() {
+				if(showProgress) editor.setProgressState(0); // Hide progress symbol
+			});
+	}
+
+	function updateInfo(editor) {
+		$.get(outputPath+"/version.json",
+				function(data, textStatus, jqXHR) {
+					var v = $('.versionInfo');
+					if(!v.length) {
+						v = $('<span>')
+								.css({'float':'right', 'margin-right': '100px', 'padding-top':'4px'})
+								.addClass('versionInfo');
+						$(editor.contentAreaContainer).siblings(".mce-statusbar").find('.mce-container-body').append(v);
+					}
+					v.html(' Version: '+data.version+' Hash: '+data.hash+' ');
+				}
+		);
+	}
+
+	$.get(outputPath+"/content.html",
+			function(data, textStatus, jqXHR){
+				$("#content").html(data);
+
+				$(document).ready(function() {
+					tinymce.init({
+						selector:'#content',
+						plugins: [
+							// importcss could be usefull
+							'advlist autolink colorpicker contextmenu image imagetools layer tabfocus textpattern wordcount', // without menu and toolbar entry
+							'codesample save textcolor', // with toolbar button
+							'anchor charmap code fullpage fullscreen hr insertdatetime link media nonbreaking pagebreak paste preview print searchreplace table template visualblocks visualchars', // with menu and toolbar entry
+							'localautosave asciimath4' // external plugins
+						],
+						external_plugins: {
+							'asciimath4': '/vendor/asciimath-tinymce4/plugin.js',
+							'localautosave' : '/vendor/TinyMCE-LocalAutoSave/localautosave/plugin.min.js'
+						},
+						toolbar: 'showMenu | styleselect formatselect | bold italic underline | alignleft aligncenter alignjustify | bullist numlist | outdent indent | blockquote | removeformat | table hr link unlink pagebreak codesample asciimath4 | code visualblocks visualchars | undo redo fullscreen localautosave | save',
+
+						// tinymce settings
+						entity_encoding : "raw",
+						content_css : 'css/custom.css',
+						browser_spellcheck : true,
+						/* specify events for editor */
+						setup : function setup(editor) {
+							editor.addButton('showMenu', {
+								text: "Menu",
+								icon: 'options',
+								onclick: function () {
+									editor.menubar = !editor.menubar;
+									$(editor.contentAreaContainer).siblings(".mce-menubar").toggle();
+								}
+							});
+
+							/*editor.on('focus', function () {
+							 $(editor.contentAreaContainer).siblings(".mce-toolbar-grp").show();
+							 });
+							 editor.on('blur', function () {
+							 $(editor.contentAreaContainer).siblings(".mce-toolbar-grp").hide();
+							 });
+							 editor.on("init", function () {
+							 $(editor.contentAreaContainer).siblings(".mce-toolbar-grp").hide();
+							 });*/
+
+							/*editor.on('change', function() {
+							 $(editor.contentDocument.body).find('p').hyphenate(lang);
+							 });*/
+							/*editor.on('NodeChange', function(e) {
+							 ajaxSave(editor);
+							 });*/
+
+							$( window ).unload(function() {
+								ajaxSave(editor);
+							});
+						},
+						/* change dom and elements of editor */
+						init_instance_callback: function(editor) {
+							updateInfo(editor);
+
+							editor.menubar = false;
+							$(editor.contentAreaContainer).siblings(".mce-menubar").hide();
+
+							$(editor.getBody()).attr('lang', lang).css({
+								'-webkit-hyphens': 'auto',
+								'-moz-hyphens': 'auto',
+								'-ms-hyphens': 'auto',
+								'hyphens': 'auto',
+								'hyphenate-limit-chars': 'auto 5',
+								'hyphenate-limit-lines': '2',
+							});
+
+							//$('#tblspecializations tr > td:contains(Some Value) + td:contains(2)').length
+							var bibs = editor.dom.select('td:contains("bibtexify:")');
+							tinymce.each(bibs, function(node) {
+								var table = $(node).closest('table');
+								var path = node.textContent.replace('bibtexify:', '').trim();
+
+								var wrapper = $('<div style="display:none">');
+								var placeHolderTable = $('<table data-bibtex="'+path+'">');
+
+								wrapper.append(placeHolderTable);
+								$('body').append(wrapper);
+								//table.attr('id', id);
+
+								bibtexify(path, placeHolderTable, {'visualization': false});
+
+								var i = setInterval(function () {
+									if(placeHolderTable[0].innerHTML.length > 0) {
+										table[0].outerHTML = placeHolderTable[0].outerHTML;
+										wrapper.remove();
+										clearInterval(i);
+									}
+								}, 0);
+							});
+
+							initEditorOutline(editor, editor.getDoc());
+						},
+						style_formats: [
+							{ title: 'Headers', items: [
+								{ title: 'h1', block: 'h1' },
+								{ title: 'h2', block: 'h2' },
+								{ title: 'h3', block: 'h3' },
+								{ title: 'h4', block: 'h4' },
+								{ title: 'h5', block: 'h5' },
+								{ title: 'h6', block: 'h6' }
+							] },
+							{ title: 'Blocks', items: [
+								{ title: 'p', block: 'p' },
+								{ title: 'div', block: 'div' },
+								{ title: 'pre', block: 'pre' }
+							] },
+							{ title: 'Containers', items: [
+								{ title: 'section', block: 'section', wrapper: true, merge_siblings: false },
+								{ title: 'article', block: 'article', wrapper: true, merge_siblings: false },
+								{ title: 'blockquote', block: 'blockquote', wrapper: true },
+								{ title: 'hgroup', block: 'hgroup', wrapper: true },
+								{ title: 'aside', block: 'aside', wrapper: true },
+								{ title: 'figure', block: 'figure', wrapper: true },
+								{ title: 'toc', block: 'div', wrapper: false, attributes: {id: 'toc'} }
+							] },
+							{ title: 'Markers', items: [
+								{ title: 'reference', inline: 'sup', classes: 'reference'},
+								{ title: 'footnote', inline: 'sub', classes: 'footnote'},
+								{ title: 'question', block: 'p', classes: 'alert question', wrapper: true  },
+							] }
+						],
+						end_container_on_empty_block: true,
+
+						// begin for development only!!!
+						cache_suffix: "?" + new Date().getTime(),
+						// end for development only!!!
+
+						// plugin settings
+						las_seconds: 60,
+						las_nVersions: 50,
+						image_advtab: true,
+						save_enablewhendirty: true,
+						save_onsavecallback: function (editor) { ajaxSave(editor, true); return false },
+						visualblocks_default_state: true,
+					});
+				});
+
+				activeSaving = window.setInterval("checkForAutosave()", 10 * 60000);
+			}
+	).error(function(error) {
+		alert("Loading did not work: " +error);
+	});
+
+	/*    (function() {
+
+	 var tocBibHook = document.getElementById("toc-bibliography");
+	 // if hook exists within content copy the generated bibliography into the hook element
+	 if(tocBibHook) {
+	 document.getElementById("toc-bibliography").innerHTML = document.getElementById("bibliography").innerHTML;
+	 }
+
+	 var tocRefHook = document.getElementById("toc-references");
+	 // if hook exists within content copy the generated bibliography into the hook element
+	 if(tocRefHook) {
+	 document.getElementById("toc-references").innerHTML = document.getElementById("references").innerHTML;
+	 }
+
+	 document.getElementById("content").innerHTML = document.getElementById("precontent").innerHTML;
+	 }());*/
+
+</script>
+</body>
+</html>
