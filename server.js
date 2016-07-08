@@ -10,6 +10,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 
+const library = require("./library/library"); // defines things like ServerError, ServerLog, SingleConnection ...
 const config = require("./config");
 
 var outputPath = path.join(__dirname, 'output');
@@ -134,34 +135,3 @@ fs.mkdir(outputPath, function (err) {
 		else outputFolderCallback(err); // something else went wrong
 	} else outputFolderCallback(null); // successfully created folder
 });
-
-// ---
-// logger and error handling functions
-// ---
-function ServerLog(msg) {
-	console.log(msg);
-}
-
-/**
- * @return false if error handler did not had to be active
- */
-function ServerError(err, stderr) {
-	if (!err && !stderr) {
-		return false; // no error found
-	}
-	else {
-		var msg = '' + err + stderr;
-		console.error(msg);
-	}
-	return true; // error handled = true
-}
-
-function RequestError(response) {
-	return function HandleErrorMessage(err, stderr) {
-		var e = ServerError(err, stderr);
-		if (e) {
-			response.status(500).end('' + err + stderr);
-		}
-		return e;
-	}
-}
