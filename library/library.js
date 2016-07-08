@@ -3,7 +3,6 @@
  */
 "use strict";
 
-global.Intl = require('./i18n')(config.locale);
 global.ServerError = require('./logManagement').ServerError;
 global.ServerLog = require('./logManagement').ServerLog;
 global.RequestError = require('./logManagement').RequestError;
