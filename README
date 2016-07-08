@@ -1,8 +1,0 @@
-# ScienceWriter
-This folder contains:
-* a node server (server.js) which observes changes in 'output' folder and keeps it in sync with git
-* a editor.html and index.html to serve
-
-## Instalation
-* First you need npm and nodejs https://docs.npmjs.com/getting-started/installing-node
-* Then install express and commander via npm install express commander
