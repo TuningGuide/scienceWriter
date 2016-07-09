@@ -17,6 +17,6 @@
     "commander": "latest",
     "simple-git": "latest",
     "express": "latest",
-    "body-parser": "latest"
+    "body-parser": "latest",
   }
 }

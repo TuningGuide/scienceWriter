@@ -1,5 +1,5 @@
 (function () {
-	var thesis = document.getElementsByTagName('article')[0];
+	var thesis = document.getElementsByTagName('main')[0];
 
 	var documentOutline = HTML5Outline(thesis);
 	if (documentOutline != null) {
