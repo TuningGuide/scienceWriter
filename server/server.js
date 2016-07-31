@@ -13,7 +13,9 @@ const app = express();
 const library = require("./library/library"); // defines things like ServerError, ServerLog, SingleConnection ...
 const config = require("./config");
 
-var outputPath = path.join(__dirname, 'output');
+var outputPath = path.join(__dirname, '../output');
+var clientPath = path.join(__dirname, '../client');
+var basePath = path.join(__dirname, '..');
 var contentPath = path.join(outputPath, 'content.html');
 var versionPath = path.join(outputPath, 'version.json');
 var outputFolderCreated = false;
@@ -28,7 +30,8 @@ program
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 // Deliver static files from folder
-app.use(express.static(__dirname));
+app.use(express.static(clientPath));
+app.use('/output', express.static(outputPath));
 
 var gitRepo = simpleGit(outputPath);
 gitRepo.outputHandler(function (command, stdout, stderr) {
@@ -81,10 +84,14 @@ app.post('/output/content.html', function (request, response) {
 				errorHandler('Could not commit content as git was not initialised (yet)!');
 			}
 
-			rsync.execute(function (err, code, cmd) {
-				ServerError(err);
-				ServerLog(cmd + ': ' + code);
-			});
+			rsync.execute(
+				function (err, code, cmd) {
+					ServerError(err);
+					ServerLog(cmd + ': ' + code);
+				},
+				ServerLog,
+				ServerError
+			);
 		});
 	}
 	else {
@@ -123,7 +130,7 @@ var outputFolderCallback = function (err) {
 	fs.mkdir(path.join(outputPath, '.git'), function (err) {
 		if (!err) {
 			gitRepo.init();
-			gitRepo.addRemote('origin', pushUrl);
+			gitRepo.addRemote('origin', config.git.pushUrl);
 		}
 		gitFolderInitialised = true;
 	});

@@ -10,10 +10,8 @@
   "author": "Velten Heyn <veltenheyn@web.de> <vh@valoric.de>",
   "license": "Closed",
   "dependencies": {
-    "rsync": "^0.4.0",
-    "commander": "latest",
-    "simple-git": "latest",
-    "express": "latest",
-    "body-parser": "latest"
+    "h5o": "^0.11.3",
+    "hypher": "^0.2.4",
+    "jquery-ui": "^1.12.0"
   }
 }
